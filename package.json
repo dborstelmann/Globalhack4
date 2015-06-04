@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "dependencies": {
+    "grunt": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-concat": "*",
+    "jit-grunt": "*",
+    "grunt-template-module": "0.5.0"
+  }
+}
+
