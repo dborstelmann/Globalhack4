@@ -2,11 +2,21 @@
 <meta charset="utf-8">
 <head>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 </head>
 <style>
 
+@font-face {
+font-family: 'DIN';
+  src: url('DIN.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+.our-font {
+  font-family: 'DIN';
+}
+
 .single-hex {
-  fill: #64c7cc;
+  fill: #777;
   pointer-events: all;
   cursor: pointer;
 }
@@ -22,15 +32,107 @@
 
 .mesh {
   fill: none;
-  stroke: #000;
-  stroke-opacity: .2;
+  stroke: #777;
   pointer-events: none;
 }
 
 .border {
-  stroke: #fff;
-  stroke-width: 5px;
+  stroke: #777;
+  stroke-width: 10px;
 }
+
+.hex-specific {
+  position: relative;
+  width: 240px;
+  height: 138.56px;
+  background-color: #64C7CC;
+  margin: 69.28px 0;
+}
+
+.hex-specific:before,
+.hex-specific:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 120px solid transparent;
+  border-right: 120px solid transparent;
+}
+
+.hex-specific:before {
+  bottom: 100%;
+  border-bottom: 69.28px solid #64C7CC;
+}
+
+.hex-specific:after {
+  top: 100%;
+  width: 0;
+  border-top: 69.28px solid #64C7CC;
+}
+
+.hex-mini {
+  position: relative;
+  width: 220px;
+  height: 47.02px;
+  background-color: #fff;
+  margin: 63.51px 0;
+}
+
+.hex-mini:before,
+.hex-mini:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 110px solid transparent;
+  border-right: 110px solid transparent;
+}
+
+.hex-mini:before {
+  bottom: 100%;
+  border-bottom: 63.51px solid #fff;
+}
+
+.hex-mini:after {
+  top: 100%;
+  width: 0;
+  border-top: 63.51px solid #fff;
+}
+
+.r-hex {
+  overflow: hidden;
+  display: inline-block;
+  margin: 4em 0;
+  width: 20em; height: 17.32em;
+  transform: rotate(-30deg) skewX(30deg);
+  border-radius: .5em;
+}
+.r-hex *, .r-hex *:before {
+  display: block;
+  overflow: hidden;
+  width: inherit; height: inherit;
+  border-radius: inherit;
+}
+.r-hex-inner {
+  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
+  opacity: .15;
+  transition: opacity .75s;
+  cursor: pointer;
+}
+.r-hex:first-child .r-hex-inner:before, .r-hex-inner-2 {
+  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
+  background: orange;
+  content: '';
+}
+.r-hex-inner-2:before {
+  margin-top: -1.5em;
+  height: 20em;
+  transform: skewX(-30deg) rotate(-90deg);
+  background: url(http://images.fineartamerica.com/images-medium-large/sumatran-tiger-cub--panthera-tigris-sumatrae-life-on-white.jpg);
+  background-size: cover;
+  line-height: 20em;
+  text-align: center;
+  content: 'Hello, be a nice kitty...';
+}
+.r-hex-inner:hover { opacity: 1; }
 
 </style>
 <body>
@@ -39,11 +141,13 @@
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script>
 
-var width = 5000,
-    height = 5000,
-    radius = 150,
-    xDiff = 711.69,
-    yDiff = 619;
+    hexValObjs = [];
+
+    var width = 5000,
+        height = 5000,
+        radius = 150,
+        xDiff = 711.69,
+        yDiff = 619;
 
     var topology = hexTopology(radius, width, height);
 
@@ -60,15 +164,16 @@ var width = 5000,
         .attr("class", "hexagon")
       .selectAll("g.single-hex")
         .data(topology.objects.hexagons.geometries)
-      .enter().append('g').attr('class', 'single-hex');
+      .enter().append('g').attr('class', 'single-hex border');
 
     singleHex.append("path")
         .attr("d", function(d) { return path(topojson.feature(topology, d)); })
         .attr("data-loc", function(d){ return d.loc.i +',' + d.loc.j; })
-        .attr("data-array-loc", function(d){ return d.arrayLoc.i +',' + d.arrayLoc.j; })
+        .attr("data-array-loc", function(d){
+            hexValObjs.push({xArrayPos: d.arrayLoc.i, yArrayPos: d.arrayLoc.j, xVal:d.loc.i, yVal:d.loc.j, rowVal:d.arrayLoc.j, dx:d.arrayLoc.dx});
+            return d.arrayLoc.i +',' + d.arrayLoc.j;
+          })
         .on("mousedown", mousedown);
-
-    singleHex.append('text').text('hullo');
 
     svg.append("path")
         .datum(topojson.mesh(topology, topology.objects.hexagons))
@@ -76,7 +181,7 @@ var width = 5000,
         .attr("d", path);
 
     function mousedown(d) {
-      d3.select(this).attr("class", "border");
+      d3.select(this).style({'fill': '#fff'});
       if (d.arrayLoc.j % 2 == 1) {
         window.scrollTo(d.loc.i-xDiff, d.loc.j-yDiff);
       } else {
@@ -139,7 +244,7 @@ var width = 5000,
 
 
 <script type="text/javascript" charset="utf-8">
-window.scrollTo(2406, 2306);
+
 
 var keys = [37, 38, 39, 40];
 
@@ -174,11 +279,46 @@ function disable_scroll() {
 disable_scroll();
 
 
+_.each(hexValObjs, function (hexObj, index) {
+  var tempY = hexObj.yVal - 355;
+  var tempX = hexObj.xVal - 112;
+
+  if (hexObj.rowVal % 2 == 0) {
+    tempX = tempX + (hexObj.dx / 2);
+  }
+
+  $('body').append("<div id=" + hexObj.xArrayPos + "," + hexObj.yArrayPos + " class='hex-specific' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
+  + "style='position:absolute; top:" + tempY + "px; left:" + tempX + "px;'>"
+    + "<div class='hex-mini' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
+    + "style='z-index:2;position:relative;top:-58px;left:10px;'>"
+      + "<p class='our-font' style='z-index:3; text-align:center;'>Obama Is awesome hello world whateversd fkhsdkl</p>"
+    + "</div>"
+  + "</div>");
 
 
+  var weeX = hexObj.yVal - 355;
+  var weeY = hexObj.xVal - 112;
 
+  if (hexObj.rowVal % 2 == 0) {
+    weeX = weeX + (hexObj.dx / 2);
+  }
 
+});
 
+$.ajax({
+
+       'url' : 'http://localhost:5000/search/',
+       'type' : 'GET',
+       'success' : function(data) {
+         debugger;
+       },
+       'error' : function(request,error)
+       {
+           alert("Request: "+JSON.stringify(request));
+       }
+   });
+
+window.scrollTo(2406, 2306);
 
 
 
