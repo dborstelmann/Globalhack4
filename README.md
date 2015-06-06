@@ -14,4 +14,3 @@ This is a pretty sparse frontend setup for hackathons. It includes:
 3. `npm install`. We're only using npm to manage grunt at the moment, so this should be pretty light.
 4. `python -m SimpleHTTPServer` and navigate to `localhost:8000`.
 5. That's it :)
-
