@@ -22,8 +22,8 @@ svg {
 }
 
 .mains {
-  font-size: 20px;
-  margin-top: 30px;
+  font-size: 24px;
+  margin-top: 0px;
 }
 
 .overTop {
@@ -167,6 +167,8 @@ svg {
 
     hexValObjs = [];
 
+    tempback = "";
+
     var width = 5000,
         height = 5000,
         radius = 150,
@@ -292,7 +294,9 @@ svg {
         .attr("data-array-loc-outer", function(d){
             return 'z' + d.arrayLoc.i +'-' + d.arrayLoc.j;
           })
-        .on("mousedown", mousedown);
+        .on("mousedown", mousedown)
+        .on('mouseover', mouseover)
+        .on('mouseout', mouseout);
 
     svgOuter.append("path")
         .datum(topojson.mesh(topology2, topology2.objects.hexagons))
@@ -312,6 +316,15 @@ svg {
         $('body').animate({scrollLeft: d.loc.i-xDiff+d.arrayLoc.dx/2, scrollTop:d.loc.j-yDiff}, 1000);
       }
 
+    }
+
+    function mouseover(d) {
+      tempback = d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill');
+      d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', "#006fbb");
+    }
+
+    function mouseout(d) {
+      d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', tempback);
     }
 
 
@@ -435,8 +448,8 @@ $.ajax({
              .attr("id", 'business')
              .attr('width', 259.808)
              .attr('height', 300)
-             .attr('x', 0)
-             .attr('y', 40.192)
+             .attr('x', 125)
+             .attr('y', 180.192)
              .attr("patternUnits","userSpaceOnUse")
              .append("image")
              .attr('width', 300)
@@ -448,8 +461,8 @@ $.ajax({
                 .attr("id", 'culture')
                 .attr('width', 259.808)
                 .attr('height', 300)
-                .attr('x', 0)
-                .attr('y', 40.192)
+                .attr('x', 125)
+                .attr('y', 180.192)
                 .attr("patternUnits","userSpaceOnUse")
                 .append("image")
                 .attr('width', 300)
@@ -462,7 +475,7 @@ $.ajax({
                    .attr('width', 259.808)
                    .attr('height', 300)
                    .attr('x', 0)
-                   .attr('y', 40.192)
+                   .attr('y', 70.192)
                    .attr("patternUnits","userSpaceOnUse")
                    .append("image")
                    .attr('width', 300)
@@ -475,7 +488,7 @@ $.ajax({
                       .attr('width', 259.808)
                       .attr('height', 300)
                       .attr('x', 0)
-                      .attr('y', 40.192)
+                      .attr('y', 220.192)
                       .attr("patternUnits","userSpaceOnUse")
                       .append("image")
                       .attr('width', 300)
@@ -488,7 +501,7 @@ $.ajax({
                          .attr('width', 259.808)
                          .attr('height', 300)
                          .attr('x', 0)
-                         .attr('y', 40.192)
+                         .attr('y', 70.192)
                          .attr("patternUnits","userSpaceOnUse")
                          .append("image")
                          .attr('width', 300)
@@ -501,7 +514,7 @@ $.ajax({
                             .attr('width', 259.808)
                             .attr('height', 300)
                             .attr('x', 0)
-                            .attr('y', 40.192)
+                            .attr('y', 220.192)
                             .attr("patternUnits","userSpaceOnUse")
                             .append("image")
                             .attr('width', 300)
@@ -522,6 +535,9 @@ $.ajax({
                                .attr('x', 0)
                                .attr("xlink:href", '/static/pngs4U/lockerdome-logo.png');
 
+
+
+
          d3.select('path[data-array-loc=z11-13]').style('fill', "url(#business)");
          d3.select('path[data-array-loc=z12-13]').style('fill', "url(#lockerdome-logo)");
          d3.select('path[data-array-loc=z13-13]').style('fill', "url(#culture)");
@@ -531,12 +547,12 @@ $.ajax({
          d3.select('path[data-array-loc=z12-14]').style('fill', "url(#technology)");
 
          $('#cd12-13').remove();
-         $('#cd11-13').css('top', '-30px');
-         $('#cd13-13').css('top', '-30px');
-         $('#cd11-12').css('top', '-30px');
-         $('#cd12-12').css('top', '-30px');
-         $('#cd11-14').css('top', '-30px');
-         $('#cd12-14').css('top', '-30px');
+         $('#cd11-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/business-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+         $('#cd13-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/culture-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+         $('#cd11-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/science-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+         $('#cd12-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/sports-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+         $('#cd11-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/cuisine-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+         $('#cd12-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/technology-icon.png' style='width:90px;height:70px;margin-left:66px'>");
 
          $('#ef11-13').addClass('mains').text('business');
          $('#ef13-13').addClass('mains').text('culture');
