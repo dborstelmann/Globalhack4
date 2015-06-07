@@ -11,8 +11,23 @@ font-family: 'DIN';
   src: url('DIN.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
 
+svg {
+  position: absolute;
+}
+
 .our-font {
   font-family: 'DIN';
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.mains {
+  font-size: 20px;
+  margin-top: 30px;
+}
+
+.overTop {
+  opacity: 0;
 }
 
 .single-hex {
@@ -26,13 +41,18 @@ font-family: 'DIN';
   transition: fill 250ms linear;
 }
 
-.single-hex :hover {
+.single {
+  background-color: rgba(255,255,255,0.5);
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.single :hover {
   fill: #444;
 }
 
 .mesh {
   fill: none;
-  stroke: #777;
   pointer-events: none;
 }
 
@@ -42,10 +62,10 @@ font-family: 'DIN';
 }
 
 .hex-specific {
-  position: relative;
+  position: absolute;
   width: 240px;
   height: 138.56px;
-  background-color: #64C7CC;
+  background-color: rgba(255,255,255,0);
   margin: 69.28px 0;
 }
 
@@ -60,19 +80,19 @@ font-family: 'DIN';
 
 .hex-specific:before {
   bottom: 100%;
-  border-bottom: 69.28px solid #64C7CC;
+  border-bottom: 69.28px solid transparent;
 }
 
 .hex-specific:after {
   top: 100%;
   width: 0;
-  border-top: 69.28px solid #64C7CC;
+  border-top: 69.28px solid transparent;
 }
 
 .hex-mini {
   position: relative;
   width: 220px;
-  height: 47.02px;
+  height: 50px;
   background-color: #fff;
   margin: 63.51px 0;
 }
@@ -134,6 +154,10 @@ font-family: 'DIN';
 }
 .r-hex-inner:hover { opacity: 1; }
 
+.headline {
+  padding: 4px;
+}
+
 </style>
 <body>
 </body>
@@ -158,7 +182,9 @@ font-family: 'DIN';
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height),
+        defs = svg.append('defs');
+
 
     var singleHex = svg.append("g")
         .attr("class", "hexagon")
@@ -168,27 +194,27 @@ font-family: 'DIN';
 
     singleHex.append("path")
         .attr("d", function(d) { return path(topojson.feature(topology, d)); })
-        .attr("data-loc", function(d){ return d.loc.i +',' + d.loc.j; })
+        .attr("data-loc", function(d){ return 'z' + d.loc.i +'-' + d.loc.j; })
         .attr("data-array-loc", function(d){
             hexValObjs.push({xArrayPos: d.arrayLoc.i, yArrayPos: d.arrayLoc.j, xVal:d.loc.i, yVal:d.loc.j, rowVal:d.arrayLoc.j, dx:d.arrayLoc.dx});
-            return d.arrayLoc.i +',' + d.arrayLoc.j;
+            return 'z' + d.arrayLoc.i +'-' + d.arrayLoc.j;
           })
-        .on("mousedown", mousedown);
+        // .on("mousedown", mousedown);
 
     svg.append("path")
         .datum(topojson.mesh(topology, topology.objects.hexagons))
         .attr("class", "mesh")
         .attr("d", path);
-
-    function mousedown(d) {
-      d3.select(this).style({'fill': '#fff'});
-      if (d.arrayLoc.j % 2 == 1) {
-        window.scrollTo(d.loc.i-xDiff, d.loc.j-yDiff);
-      } else {
-        window.scrollTo(d.loc.i-xDiff+d.arrayLoc.dx/2, d.loc.j-yDiff);
-      }
-
-    }
+    //
+    // function mousedown(d) {
+    //   //d3.select(this).style({'fill': '#fff'});
+    //   if (d.arrayLoc.j % 2 == 1) {
+    //     window.scrollTo(d.loc.i-xDiff, d.loc.j-yDiff);
+    //   } else {
+    //     window.scrollTo(d.loc.i-xDiff+d.arrayLoc.dx/2, d.loc.j-yDiff);
+    //   }
+    //
+    // }
 
     function hexTopology(radius, width, height) {
       var dx = radius * 2 * Math.sin(Math.PI / 3),
@@ -239,6 +265,55 @@ font-family: 'DIN';
       };
     }
 
+    var topology2 = hexTopology(radius, width, height);
+
+    var projection2 = hexProjection(radius);
+
+    var path2 = d3.geo.path()
+        .projection(projection2);
+
+    var svgOuter = d3.select("body").append("svg")
+        .style('z-index', 10)
+        .attr("class", "overTop")
+        .attr("width", width)
+        .attr("height", height),
+        defs = svgOuter.append('defs');
+
+
+    var singleHexOuter = svgOuter.append("g")
+        .attr("class", "hexagon")
+      .selectAll("g.single")
+        .data(topology2.objects.hexagons.geometries)
+      .enter().append('g').attr('class', 'single border');
+
+      singleHexOuter.append("path")
+        .attr("d", function(d) { return path(topojson.feature(topology, d)); })
+        .attr("data-loc-outer", function(d){ return 'z' + d.loc.i +'-' + d.loc.j; })
+        .attr("data-array-loc-outer", function(d){
+            return 'z' + d.arrayLoc.i +'-' + d.arrayLoc.j;
+          })
+        .on("mousedown", mousedown);
+
+    svgOuter.append("path")
+        .datum(topojson.mesh(topology2, topology2.objects.hexagons))
+        .attr("class", "mesh")
+        .attr("d", path);
+
+    function mousedown(d) {
+      d3.select(this).style({'fill': '#fff'});
+      // if (d.arrayLoc.j % 2 == 1) {
+      //   $(window).animate(window.scrollTo(d.loc.i-xDiff, d.loc.j-yDiff), 2000);
+      // } else {
+      //   window.scrollTo(d.loc.i-xDiff+d.arrayLoc.dx/2, d.loc.j-yDiff);
+      // }
+      if (d.arrayLoc.j % 2 == 1) {
+        $('body').animate({scrollLeft: d.loc.i-xDiff, scrollTop:d.loc.j-yDiff}, 1000);
+      } else {
+        $('body').animate({scrollLeft: d.loc.i-xDiff+d.arrayLoc.dx/2, scrollTop:d.loc.j-yDiff}, 1000);
+      }
+
+    }
+
 
 </script>
 
@@ -287,13 +362,15 @@ _.each(hexValObjs, function (hexObj, index) {
     tempX = tempX + (hexObj.dx / 2);
   }
 
-  $('body').append("<div id=" + hexObj.xArrayPos + "," + hexObj.yArrayPos + " class='hex-specific' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
+  $('body').append("<div id='ab" + hexObj.xArrayPos + "-" + hexObj.yArrayPos + "' class='hex-specific' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
   + "style='position:absolute; top:" + tempY + "px; left:" + tempX + "px;'>"
-    + "<div class='hex-mini' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
+    + "<div id='cd" + hexObj.xArrayPos + "-" + hexObj.yArrayPos + "' class='hex-mini' data-xPos='" + hexObj.xArrayPos + "' data-yPos='" + hexObj.yArrayPos + "' "
     + "style='z-index:2;position:relative;top:-58px;left:10px;'>"
-      + "<p class='our-font' style='z-index:3; text-align:center;'>Obama Is awesome hello world whateversd fkhsdkl</p>"
+      + "<p id='ef" + hexObj.xArrayPos + "-" + hexObj.yArrayPos + "' class='our-font headline' style='z-index:3; text-align:center;'></p>"
     + "</div>"
   + "</div>");
+
+
 
 
   var weeX = hexObj.yVal - 355;
@@ -310,13 +387,173 @@ $.ajax({
        'url' : 'http://localhost:5000/search/',
        'type' : 'GET',
        'success' : function(data) {
-         debugger;
+        _.each($('.headline'), function (value, index) {
+            $(value).text(data.results[index].title);
+         });
+         _.each($('.hex-specific'), function (value, index) {
+             var article = data.results[index];
+             var img = ''
+             if (article.media) {
+               img = article.media[0]['media-metadata'][0].url;
+             }
+             var datas = hexValObjs[index];
+             if (datas.yArrayPos % 2 == 0) {
+               defs
+                  .append("pattern")
+                  .attr("id", index)
+                  .attr('width', 259.808)
+                  .attr('height', 300)
+                  .attr('x', 0)
+                  .attr('y', 40.192)
+                  .attr("patternUnits","userSpaceOnUse")
+                  .append("image")
+                  .attr('width', 300)
+                  .attr('height', 300)
+                  .attr('x', 0)
+                  .attr("xlink:href", img);
+             } else {
+               defs
+                  .append("pattern")
+                  .attr("id", index)
+                  .attr('width', 259.808)
+                  .attr('height', 300)
+                  .attr('x', 259.808/2)
+                  .attr('y', 40.192)
+                  .attr("patternUnits","userSpaceOnUse")
+                  .append("image")
+                  .attr('width', 300)
+                  .attr('height', 300)
+                  .attr('x', 0)
+                  .attr("xlink:href", img);
+             }
+
+                d3.select('path[data-array-loc=z'+datas.xArrayPos+'-'+datas.yArrayPos+']').style('fill', "url(#"+index+")");
+         });
+
+          defs
+             .append("pattern")
+             .attr("id", 'business')
+             .attr('width', 259.808)
+             .attr('height', 300)
+             .attr('x', 0)
+             .attr('y', 40.192)
+             .attr("patternUnits","userSpaceOnUse")
+             .append("image")
+             .attr('width', 300)
+             .attr('height', 300)
+             .attr('x', 0)
+             .attr("xlink:href", '/static/pngs4U/business.png');
+             defs
+                .append("pattern")
+                .attr("id", 'culture')
+                .attr('width', 259.808)
+                .attr('height', 300)
+                .attr('x', 0)
+                .attr('y', 40.192)
+                .attr("patternUnits","userSpaceOnUse")
+                .append("image")
+                .attr('width', 300)
+                .attr('height', 300)
+                .attr('x', 0)
+                .attr("xlink:href", '/static/pngs4U/culture.png');
+                defs
+                   .append("pattern")
+                   .attr("id", 'cuisine')
+                   .attr('width', 259.808)
+                   .attr('height', 300)
+                   .attr('x', 0)
+                   .attr('y', 40.192)
+                   .attr("patternUnits","userSpaceOnUse")
+                   .append("image")
+                   .attr('width', 300)
+                   .attr('height', 300)
+                   .attr('x', 0)
+                   .attr("xlink:href", '/static/pngs4U/cuisine.png');
+                   defs
+                      .append("pattern")
+                      .attr("id", 'science')
+                      .attr('width', 259.808)
+                      .attr('height', 300)
+                      .attr('x', 0)
+                      .attr('y', 40.192)
+                      .attr("patternUnits","userSpaceOnUse")
+                      .append("image")
+                      .attr('width', 300)
+                      .attr('height', 300)
+                      .attr('x', 0)
+                      .attr("xlink:href", '/static/pngs4U/science.png');
+                      defs
+                         .append("pattern")
+                         .attr("id", 'technology')
+                         .attr('width', 259.808)
+                         .attr('height', 300)
+                         .attr('x', 0)
+                         .attr('y', 40.192)
+                         .attr("patternUnits","userSpaceOnUse")
+                         .append("image")
+                         .attr('width', 300)
+                         .attr('height', 300)
+                         .attr('x', 0)
+                         .attr("xlink:href", '/static/pngs4U/technology.png');
+                         defs
+                            .append("pattern")
+                            .attr("id", 'sports')
+                            .attr('width', 259.808)
+                            .attr('height', 300)
+                            .attr('x', 0)
+                            .attr('y', 40.192)
+                            .attr("patternUnits","userSpaceOnUse")
+                            .append("image")
+                            .attr('width', 300)
+                            .attr('height', 300)
+                            .attr('x', 0)
+                            .attr("xlink:href", '/static/pngs4U/sports.png');
+                            defs
+                               .append("pattern")
+                               .attr("id", 'lockerdome-logo')
+                               .attr('width', 259.808)
+                               .attr('height', 300)
+                               .attr('x', 108)
+                               .attr('y', 140.192)
+                               .attr("patternUnits","userSpaceOnUse")
+                               .append("image")
+                               .attr('width', 300)
+                               .attr('height', 300)
+                               .attr('x', 0)
+                               .attr("xlink:href", '/static/pngs4U/lockerdome-logo.png');
+
+         d3.select('path[data-array-loc=z11-13]').style('fill', "url(#business)");
+         d3.select('path[data-array-loc=z12-13]').style('fill', "url(#lockerdome-logo)");
+         d3.select('path[data-array-loc=z13-13]').style('fill', "url(#culture)");
+         d3.select('path[data-array-loc=z11-12]').style('fill', "url(#science)");
+         d3.select('path[data-array-loc=z12-12]').style('fill', "url(#sports)");
+         d3.select('path[data-array-loc=z11-14]').style('fill', "url(#cuisine)");
+         d3.select('path[data-array-loc=z12-14]').style('fill', "url(#technology)");
+
+         $('#cd12-13').remove();
+         $('#cd11-13').css('top', '-30px');
+         $('#cd13-13').css('top', '-30px');
+         $('#cd11-12').css('top', '-30px');
+         $('#cd12-12').css('top', '-30px');
+         $('#cd11-14').css('top', '-30px');
+         $('#cd12-14').css('top', '-30px');
+
+         $('#ef11-13').addClass('mains').text('business');
+         $('#ef13-13').addClass('mains').text('culture');
+         $('#ef11-12').addClass('mains').text('science');
+         $('#ef12-12').addClass('mains').text('sports');
+         $('#ef11-14').addClass('mains').text('cuisine');
+         $('#ef12-14').addClass('mains').text('technology');
+
+
        },
        'error' : function(request,error)
        {
            alert("Request: "+JSON.stringify(request));
        }
    });
+
+
 
 window.scrollTo(2406, 2306);
 
