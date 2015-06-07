@@ -100,7 +100,7 @@ svg {
 .hex-mini {
   position: relative;
   width: 220px;
-  height: 50px;
+  height: 60px;
   background-color: #fff;
   margin: 63.51px 0;
 }
@@ -176,6 +176,8 @@ svg {
     hexValObjs = [];
 
     tempback = "";
+
+    idsTaken = [];
 
     var width = 5000,
         height = 5000,
@@ -287,7 +289,7 @@ svg {
         .attr("class", "overTop")
         .attr("width", width)
         .attr("height", height),
-        defs = svgOuter.append('defs');
+        defs2 = svgOuter.append('defs');
 
 
     var singleHexOuter = svgOuter.append("g")
@@ -317,6 +319,8 @@ svg {
       if (d3.select(this).style('opacity') == '1') {
         return;
       }
+
+
 
       var topY = d.arrayLoc.j - 1;
       var downY = d.arrayLoc.j + 1;
@@ -358,30 +362,47 @@ svg {
 
 
       $("#cd"+d.arrayLoc.i+"-"+d.arrayLoc.j+"").css({height: '126px'});
-      $("#gh"+d.arrayLoc.i+"-"+d.arrayLoc.j+"").css({opacity: '1'});
+      $("#gh"+d.arrayLoc.i+"-"+d.arrayLoc.j+"").animate({opacity: '1'}, 500);
+
+      var keys_yay = "us";
+      if (d3.select(this).attr('keyword')) {
+        keys_yay = d3.select(this).attr('keyword');
+      }
 
       $.ajax({
 
-             'url' : 'http://localhost:5000/article_search/' + d3.select(this).attr('keyword') + '/',
+             'url' : 'http://127.0.0.1:8000/article_search/' + keys_yay + '/',
              'type' : 'GET',
              'success' : function(data) {
-                  var docs = data.response.docs;
+                  var docs = data.results;
+                  var tempDocs = $.extend({}, docs);
+                  _.each(tempDocs, function (value, index) {
+                      if (idsTaken.indexOf(value._id) > -1) {
+                        docs.splice(index,1);
+                      } else {
+                        idsTaken.push(value._id);
+                      }
+                  });
                   _.each(hexes, function (hex_single, index) {
                     if (hex_single.attr('data-clicked') !== 'true') {
-                      var keyword_string = '';
-                      _.each(docs[index].keywords, function (keyword_obj) {
-                          keyword_string = keyword_string.concat(" " + keyword_obj.value);
-                      });
-                      hex_single.attr('keyword', keyword_string)
+                      var keyword_string = 'us';
+                      if (docs[index].keywords.length > 0) {
+                        keyword_string = docs[index].keywords[0].value;
+                      }
+                      hex_single.attr('keyword', keyword_string);
 
                       var header = hex_single.attr('data-array-loc-outer').substring(1);
+                      $('#ef' + header + '').css({'opacity': 0});
                       $('#ef' + header + '').text(docs[index].headline.main);
-                      $('#cd' + header + '').append("<p id='gh" + header + "' style='opacity:0;z-index:3; text-align:center;' class='our-font-wee headline'>" + docs[index].lead_paragraph) + "</p>";
+                      $('#ef' + header + '').animate({'opacity': 1}, 500);
+                      if ($('#gh' + header + '').length > 0) {
+                        $('#gh' + header + '').text(docs[index].lead_paragraph);
+                      } else {
+                        $('#cd' + header + '').append("<p id='gh" + header + "' style='opacity:0;z-index:3;margin-top:-20px;text-align:center;' class='our-font-wee headline'>" + docs[index].lead_paragraph + "</p>");
+                      }
 
                       var img = ''
                       if (docs[index].multimedia.length > 1) {
-                        debugger;
-
                           img = docs[index].multimedia[1].url;
                       }
                       if (header.substring(3,5) % 2 == 0) {
@@ -391,7 +412,6 @@ svg {
                           .attr('width', 259.808)
                           .attr('height', 300)
                           .attr('x', 0)
-                          .attr('y', 40.192)
                           .attr("patternUnits","userSpaceOnUse")
                           .append("image")
                           .attr('width', 300)
@@ -414,13 +434,7 @@ svg {
                           .attr("xlink:href", "http://nytimes.com/" + img + "");
                      }
 
-                     d3.select('path[data-array-loc=z'+header.substring(0,1)+'-'+header.substring(3,5)+']').style('fill', "url(#"+header+")");
-
-
-
-
-
-
+                     d3.select('path[data-array-loc=z'+header.substring(0,2)+'-'+header.substring(3,5)+']').style('fill', "url(#"+header+")");
 
                     }
                   });
@@ -447,7 +461,7 @@ svg {
         return;
       }
       tempback = d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill');
-      d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', "#006fbb");
+      d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', "#0079bf");
     }
 
     function mouseout(d) {
@@ -713,5 +727,15 @@ window.scrollTo(2406, 2306);
 
 
 
+</script>
+
+
+<script src="http://globalhack4.test.lockerdome.com/gh_app_platform.js" type="text/javascript" charset="utf-8">
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  LD.request_height('700px');
+  LD.request_width('1500px');
 </script>
 </html>

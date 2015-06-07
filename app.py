@@ -11,8 +11,10 @@ def top_stories():
 
 @app.route("/article_search/<keyword>/")
 def article_search(keyword):
-    response = requests.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+ keyword +"&sort=newest&fl=headline%2Ckeywords%2Clead_paragraph%2Cmultimedia&api-key=9d60ae08b50ca80bbd851d6bb2800f35:12:72232947")
-    return jsonify(response.json(), status=200)
+    results = requests.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+ keyword +"&fl=headline%2C_id%2Ckeywords%2Clead_paragraph%2Cmultimedia&api-key=9d60ae08b50ca80bbd851d6bb2800f35:12:72232947").json()['response']['docs']
+    for result in (requests.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+ keyword +"&page=1&fl=headline%2C_id%2Ckeywords%2Clead_paragraph%2Cmultimedia&api-key=9d60ae08b50ca80bbd851d6bb2800f35:12:72232947").json()['response']['docs']):
+        results.append(result)
+    return jsonify(results=results, status=200)
 
 
 @app.route("/search/")
@@ -78,4 +80,4 @@ def hello():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
