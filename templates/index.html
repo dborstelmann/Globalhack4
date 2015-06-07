@@ -21,13 +21,15 @@ svg {
   font-size: 13px;
 }
 
+.our-font-wee {
+  font-family: 'DIN';
+  font-weight: bold;
+  font-size: 11px;
+}
+
 .mains {
   font-size: 24px;
   margin-top: 0px;
-}
-
-.overTop {
-  opacity: 0;
 }
 
 .single-hex {
@@ -42,9 +44,15 @@ svg {
 }
 
 .single {
-  background-color: rgba(255,255,255,0.5);
+  opacity: .5;
+  background-color: #777;
   pointer-events: all;
   cursor: pointer;
+}
+
+.single path {
+  -webkit-transition: fill 250ms linear;
+  transition: fill 250ms linear;
 }
 
 .single :hover {
@@ -155,7 +163,7 @@ svg {
 .r-hex-inner:hover { opacity: 1; }
 
 .headline {
-  padding: 4px;
+  padding: 8px;
 }
 
 </style>
@@ -294,6 +302,8 @@ svg {
         .attr("data-array-loc-outer", function(d){
             return 'z' + d.arrayLoc.i +'-' + d.arrayLoc.j;
           })
+        .attr('data-clicked', 'false')
+        .attr('keyword', '')
         .on("mousedown", mousedown)
         .on('mouseover', mouseover)
         .on('mouseout', mouseout);
@@ -304,12 +314,126 @@ svg {
         .attr("d", path);
 
     function mousedown(d) {
-      d3.select(this).style({'fill': '#fff'});
-      // if (d.arrayLoc.j % 2 == 1) {
-      //   $(window).animate(window.scrollTo(d.loc.i-xDiff, d.loc.j-yDiff), 2000);
-      // } else {
-      //   window.scrollTo(d.loc.i-xDiff+d.arrayLoc.dx/2, d.loc.j-yDiff);
-      // }
+      if (d3.select(this).style('opacity') == '1') {
+        return;
+      }
+
+      var topY = d.arrayLoc.j - 1;
+      var downY = d.arrayLoc.j + 1;
+      var leftX = d.arrayLoc.i - 1;
+      var rightX = d.arrayLoc.i + 1;
+      var middleX = d.arrayLoc.i;
+      var middleY = d.arrayLoc.j;
+
+      if (d.arrayLoc.j % 2 == 0) {
+        leftX++;
+        middleX++;
+        rightX = rightX - 2;
+      }
+
+      var topLeft = d3.select('path[data-array-loc-outer=z'+leftX+'-'+topY+']');
+      var topRight = d3.select('path[data-array-loc-outer=z'+middleX+'-'+topY+']');
+      var leftHex = d3.select('path[data-array-loc-outer=z'+leftX+'-'+middleY+']');
+      var rightHex = d3.select('path[data-array-loc-outer=z'+rightX+'-'+middleY+']');
+      var bottomLeft = d3.select('path[data-array-loc-outer=z'+leftX+'-'+downY+']');
+      var bottomRight = d3.select('path[data-array-loc-outer=z'+middleX+'-'+downY+']');
+      var middleHex = d3.select('path[data-array-loc-outer=z'+middleX+'-'+middleY+']');
+
+      topLeft.style('opacity', '0');
+      topRight.style('opacity', '0');
+      leftHex.style('opacity', '0');
+      rightHex.style('opacity', '0');
+      bottomLeft.style('opacity', '0');
+      bottomRight.style('opacity', '0');
+      middleHex.style('opacity', '0')
+
+      if (d.arrayLoc.j % 2 == 0) {
+        leftHex.attr('data-clicked', 'true');
+      } else {
+        middleHex.attr('data-clicked', 'true');
+      }
+
+
+      var hexes = [topLeft, topRight, leftHex, rightHex, bottomLeft, bottomRight];
+
+
+      $("#cd"+d.arrayLoc.i+"-"+d.arrayLoc.j+"").css({height: '126px'});
+      $("#gh"+d.arrayLoc.i+"-"+d.arrayLoc.j+"").css({opacity: '1'});
+
+      $.ajax({
+
+             'url' : 'http://localhost:5000/article_search/' + d3.select(this).attr('keyword') + '/',
+             'type' : 'GET',
+             'success' : function(data) {
+                  var docs = data.response.docs;
+                  _.each(hexes, function (hex_single, index) {
+                    if (hex_single.attr('data-clicked') !== 'true') {
+                      var keyword_string = '';
+                      _.each(docs[index].keywords, function (keyword_obj) {
+                          keyword_string = keyword_string.concat(" " + keyword_obj.value);
+                      });
+                      hex_single.attr('keyword', keyword_string)
+
+                      var header = hex_single.attr('data-array-loc-outer').substring(1);
+                      $('#ef' + header + '').text(docs[index].headline.main);
+                      $('#cd' + header + '').append("<p id='gh" + header + "' style='opacity:0;z-index:3; text-align:center;' class='our-font-wee headline'>" + docs[index].lead_paragraph) + "</p>";
+
+                      var img = ''
+                      if (docs[index].multimedia.length > 1) {
+                        debugger;
+
+                          img = docs[index].multimedia[1].url;
+                      }
+                      if (header.substring(3,5) % 2 == 0) {
+                       defs
+                          .append("pattern")
+                          .attr("id", header)
+                          .attr('width', 259.808)
+                          .attr('height', 300)
+                          .attr('x', 0)
+                          .attr('y', 40.192)
+                          .attr("patternUnits","userSpaceOnUse")
+                          .append("image")
+                          .attr('width', 300)
+                          .attr('height', 300)
+                          .attr('x', 0)
+                          .attr("xlink:href", "http://nytimes.com/" + img + "");
+                     } else {
+                       defs
+                          .append("pattern")
+                          .attr("id", header)
+                          .attr('width', 259.808)
+                          .attr('height', 300)
+                          .attr('x', 259.808/2)
+                          .attr('y', 40.192)
+                          .attr("patternUnits","userSpaceOnUse")
+                          .append("image")
+                          .attr('width', 300)
+                          .attr('height', 300)
+                          .attr('x', 0)
+                          .attr("xlink:href", "http://nytimes.com/" + img + "");
+                     }
+
+                     d3.select('path[data-array-loc=z'+header.substring(0,1)+'-'+header.substring(3,5)+']').style('fill', "url(#"+header+")");
+
+
+
+
+
+
+
+                    }
+                  });
+
+             },
+             'error' : function(request,error)
+             {
+                 alert("Request: "+JSON.stringify(request));
+             }
+         });
+
+
+
       if (d.arrayLoc.j % 2 == 1) {
         $('body').animate({scrollLeft: d.loc.i-xDiff, scrollTop:d.loc.j-yDiff}, 1000);
       } else {
@@ -319,11 +443,17 @@ svg {
     }
 
     function mouseover(d) {
+      if (d3.select(this).style('opacity') == '1') {
+        return;
+      }
       tempback = d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill');
       d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', "#006fbb");
     }
 
     function mouseout(d) {
+      if (d3.select(this).style('opacity') == '1') {
+        return;
+      }
       d3.select('path[data-array-loc=z'+d.arrayLoc.i+'-'+d.arrayLoc.j+']').style('fill', tempback);
     }
 
@@ -553,6 +683,14 @@ _.each(hexValObjs, function (hexObj, index) {
   d3.select('path[data-array-loc=z12-12]').style('fill', "url(#sports)");
   d3.select('path[data-array-loc=z11-14]').style('fill', "url(#cuisine)");
   d3.select('path[data-array-loc=z12-14]').style('fill', "url(#technology)");
+
+  d3.select('path[data-array-loc-outer=z11-13]').style('opacity', '0').attr('data-clicked', 'true').attr('keyword', 'business');
+  d3.select('path[data-array-loc-outer=z12-13]').style('opacity', "0").attr('data-clicked', 'true');
+  d3.select('path[data-array-loc-outer=z13-13]').style('opacity', "0").attr('data-clicked', 'true').attr('keyword', 'culture');
+  d3.select('path[data-array-loc-outer=z11-12]').style('opacity', "0").attr('data-clicked', 'true').attr('keyword', 'science');
+  d3.select('path[data-array-loc-outer=z12-12]').style('opacity', "0").attr('data-clicked', 'true').attr('keyword', 'sports');
+  d3.select('path[data-array-loc-outer=z11-14]').style('opacity', "0").attr('data-clicked', 'true').attr('keyword', 'cuisine');
+  d3.select('path[data-array-loc-outer=z12-14]').style('opacity', "0").attr('data-clicked', 'true').attr('keyword', 'technology');
 
   $('#cd12-13').remove();
   $('#cd11-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/business-icon.png' style='width:90px;height:70px;margin-left:66px'>");
