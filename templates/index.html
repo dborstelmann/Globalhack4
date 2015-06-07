@@ -395,179 +395,179 @@ _.each(hexValObjs, function (hexObj, index) {
 
 });
 
-$.ajax({
+// $.ajax({
+//
+//        'url' : 'http://localhost:5000/search/',
+//        'type' : 'GET',
+//        'success' : function(data) {
+//         _.each($('.headline'), function (value, index) {
+//             $(value).text(data.results[index].title);
+//          });
+//          _.each($('.hex-specific'), function (value, index) {
+//              var article = data.results[index];
+//              var img = ''
+//              if (article.media) {
+//                img = article.media[0]['media-metadata'][0].url;
+//              }
+//              var datas = hexValObjs[index];
+//              if (datas.yArrayPos % 2 == 0) {
+//                defs
+//                   .append("pattern")
+//                   .attr("id", index)
+//                   .attr('width', 259.808)
+//                   .attr('height', 300)
+//                   .attr('x', 0)
+//                   .attr('y', 40.192)
+//                   .attr("patternUnits","userSpaceOnUse")
+//                   .append("image")
+//                   .attr('width', 300)
+//                   .attr('height', 300)
+//                   .attr('x', 0)
+//                   .attr("xlink:href", img);
+//              } else {
+//                defs
+//                   .append("pattern")
+//                   .attr("id", index)
+//                   .attr('width', 259.808)
+//                   .attr('height', 300)
+//                   .attr('x', 259.808/2)
+//                   .attr('y', 40.192)
+//                   .attr("patternUnits","userSpaceOnUse")
+//                   .append("image")
+//                   .attr('width', 300)
+//                   .attr('height', 300)
+//                   .attr('x', 0)
+//                   .attr("xlink:href", img);
+//              }
+//
+//                 d3.select('path[data-array-loc=z'+datas.xArrayPos+'-'+datas.yArrayPos+']').style('fill', "url(#"+index+")");
+//          });
+//
+//
+//        },
+//        'error' : function(request,error)
+//        {
+//            alert("Request: "+JSON.stringify(request));
+//        }
+//    });
 
-       'url' : 'http://localhost:5000/search/',
-       'type' : 'GET',
-       'success' : function(data) {
-        _.each($('.headline'), function (value, index) {
-            $(value).text(data.results[index].title);
-         });
-         _.each($('.hex-specific'), function (value, index) {
-             var article = data.results[index];
-             var img = ''
-             if (article.media) {
-               img = article.media[0]['media-metadata'][0].url;
-             }
-             var datas = hexValObjs[index];
-             if (datas.yArrayPos % 2 == 0) {
+   defs
+      .append("pattern")
+      .attr("id", 'business')
+      .attr('width', 259.808)
+      .attr('height', 300)
+      .attr('x', 125)
+      .attr('y', 180.192)
+      .attr("patternUnits","userSpaceOnUse")
+      .append("image")
+      .attr('width', 300)
+      .attr('height', 300)
+      .attr('x', 0)
+      .attr("xlink:href", '/static/pngs4U/business.png');
+      defs
+         .append("pattern")
+         .attr("id", 'culture')
+         .attr('width', 259.808)
+         .attr('height', 300)
+         .attr('x', 125)
+         .attr('y', 180.192)
+         .attr("patternUnits","userSpaceOnUse")
+         .append("image")
+         .attr('width', 300)
+         .attr('height', 300)
+         .attr('x', 0)
+         .attr("xlink:href", '/static/pngs4U/culture.png');
+         defs
+            .append("pattern")
+            .attr("id", 'cuisine')
+            .attr('width', 259.808)
+            .attr('height', 300)
+            .attr('x', 0)
+            .attr('y', 70.192)
+            .attr("patternUnits","userSpaceOnUse")
+            .append("image")
+            .attr('width', 300)
+            .attr('height', 300)
+            .attr('x', 0)
+            .attr("xlink:href", '/static/pngs4U/cuisine.png');
+            defs
+               .append("pattern")
+               .attr("id", 'science')
+               .attr('width', 259.808)
+               .attr('height', 300)
+               .attr('x', 0)
+               .attr('y', 220.192)
+               .attr("patternUnits","userSpaceOnUse")
+               .append("image")
+               .attr('width', 300)
+               .attr('height', 300)
+               .attr('x', 0)
+               .attr("xlink:href", '/static/pngs4U/science.png');
                defs
                   .append("pattern")
-                  .attr("id", index)
+                  .attr("id", 'technology')
                   .attr('width', 259.808)
                   .attr('height', 300)
                   .attr('x', 0)
-                  .attr('y', 40.192)
+                  .attr('y', 70.192)
                   .attr("patternUnits","userSpaceOnUse")
                   .append("image")
                   .attr('width', 300)
                   .attr('height', 300)
                   .attr('x', 0)
-                  .attr("xlink:href", img);
-             } else {
-               defs
-                  .append("pattern")
-                  .attr("id", index)
-                  .attr('width', 259.808)
-                  .attr('height', 300)
-                  .attr('x', 259.808/2)
-                  .attr('y', 40.192)
-                  .attr("patternUnits","userSpaceOnUse")
-                  .append("image")
-                  .attr('width', 300)
-                  .attr('height', 300)
-                  .attr('x', 0)
-                  .attr("xlink:href", img);
-             }
-
-                d3.select('path[data-array-loc=z'+datas.xArrayPos+'-'+datas.yArrayPos+']').style('fill', "url(#"+index+")");
-         });
-
-          defs
-             .append("pattern")
-             .attr("id", 'business')
-             .attr('width', 259.808)
-             .attr('height', 300)
-             .attr('x', 125)
-             .attr('y', 180.192)
-             .attr("patternUnits","userSpaceOnUse")
-             .append("image")
-             .attr('width', 300)
-             .attr('height', 300)
-             .attr('x', 0)
-             .attr("xlink:href", '/static/pngs4U/business.png');
-             defs
-                .append("pattern")
-                .attr("id", 'culture')
-                .attr('width', 259.808)
-                .attr('height', 300)
-                .attr('x', 125)
-                .attr('y', 180.192)
-                .attr("patternUnits","userSpaceOnUse")
-                .append("image")
-                .attr('width', 300)
-                .attr('height', 300)
-                .attr('x', 0)
-                .attr("xlink:href", '/static/pngs4U/culture.png');
-                defs
-                   .append("pattern")
-                   .attr("id", 'cuisine')
-                   .attr('width', 259.808)
-                   .attr('height', 300)
-                   .attr('x', 0)
-                   .attr('y', 70.192)
-                   .attr("patternUnits","userSpaceOnUse")
-                   .append("image")
-                   .attr('width', 300)
-                   .attr('height', 300)
-                   .attr('x', 0)
-                   .attr("xlink:href", '/static/pngs4U/cuisine.png');
-                   defs
-                      .append("pattern")
-                      .attr("id", 'science')
-                      .attr('width', 259.808)
-                      .attr('height', 300)
-                      .attr('x', 0)
-                      .attr('y', 220.192)
-                      .attr("patternUnits","userSpaceOnUse")
-                      .append("image")
-                      .attr('width', 300)
-                      .attr('height', 300)
-                      .attr('x', 0)
-                      .attr("xlink:href", '/static/pngs4U/science.png');
-                      defs
-                         .append("pattern")
-                         .attr("id", 'technology')
-                         .attr('width', 259.808)
-                         .attr('height', 300)
-                         .attr('x', 0)
-                         .attr('y', 70.192)
-                         .attr("patternUnits","userSpaceOnUse")
-                         .append("image")
-                         .attr('width', 300)
-                         .attr('height', 300)
-                         .attr('x', 0)
-                         .attr("xlink:href", '/static/pngs4U/technology.png');
-                         defs
-                            .append("pattern")
-                            .attr("id", 'sports')
-                            .attr('width', 259.808)
-                            .attr('height', 300)
-                            .attr('x', 0)
-                            .attr('y', 220.192)
-                            .attr("patternUnits","userSpaceOnUse")
-                            .append("image")
-                            .attr('width', 300)
-                            .attr('height', 300)
-                            .attr('x', 0)
-                            .attr("xlink:href", '/static/pngs4U/sports.png');
-                            defs
-                               .append("pattern")
-                               .attr("id", 'lockerdome-logo')
-                               .attr('width', 259.808)
-                               .attr('height', 300)
-                               .attr('x', 108)
-                               .attr('y', 140.192)
-                               .attr("patternUnits","userSpaceOnUse")
-                               .append("image")
-                               .attr('width', 300)
-                               .attr('height', 300)
-                               .attr('x', 0)
-                               .attr("xlink:href", '/static/pngs4U/lockerdome-logo.png');
+                  .attr("xlink:href", '/static/pngs4U/technology.png');
+                  defs
+                     .append("pattern")
+                     .attr("id", 'sports')
+                     .attr('width', 259.808)
+                     .attr('height', 300)
+                     .attr('x', 0)
+                     .attr('y', 220.192)
+                     .attr("patternUnits","userSpaceOnUse")
+                     .append("image")
+                     .attr('width', 300)
+                     .attr('height', 300)
+                     .attr('x', 0)
+                     .attr("xlink:href", '/static/pngs4U/sports.png');
+                     defs
+                        .append("pattern")
+                        .attr("id", 'lockerdome-logo')
+                        .attr('width', 259.808)
+                        .attr('height', 300)
+                        .attr('x', 108)
+                        .attr('y', 140.192)
+                        .attr("patternUnits","userSpaceOnUse")
+                        .append("image")
+                        .attr('width', 300)
+                        .attr('height', 300)
+                        .attr('x', 0)
+                        .attr("xlink:href", '/static/pngs4U/lockerdome-logo.png');
 
 
 
 
-         d3.select('path[data-array-loc=z11-13]').style('fill', "url(#business)");
-         d3.select('path[data-array-loc=z12-13]').style('fill', "url(#lockerdome-logo)");
-         d3.select('path[data-array-loc=z13-13]').style('fill', "url(#culture)");
-         d3.select('path[data-array-loc=z11-12]').style('fill', "url(#science)");
-         d3.select('path[data-array-loc=z12-12]').style('fill', "url(#sports)");
-         d3.select('path[data-array-loc=z11-14]').style('fill', "url(#cuisine)");
-         d3.select('path[data-array-loc=z12-14]').style('fill', "url(#technology)");
+  d3.select('path[data-array-loc=z11-13]').style('fill', "url(#business)");
+  d3.select('path[data-array-loc=z12-13]').style('fill', "url(#lockerdome-logo)");
+  d3.select('path[data-array-loc=z13-13]').style('fill', "url(#culture)");
+  d3.select('path[data-array-loc=z11-12]').style('fill', "url(#science)");
+  d3.select('path[data-array-loc=z12-12]').style('fill', "url(#sports)");
+  d3.select('path[data-array-loc=z11-14]').style('fill', "url(#cuisine)");
+  d3.select('path[data-array-loc=z12-14]').style('fill', "url(#technology)");
 
-         $('#cd12-13').remove();
-         $('#cd11-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/business-icon.png' style='width:90px;height:70px;margin-left:66px'>");
-         $('#cd13-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/culture-icon.png' style='width:90px;height:70px;margin-left:66px'>");
-         $('#cd11-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/science-icon.png' style='width:90px;height:70px;margin-left:66px'>");
-         $('#cd12-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/sports-icon.png' style='width:90px;height:70px;margin-left:66px'>");
-         $('#cd11-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/cuisine-icon.png' style='width:90px;height:70px;margin-left:66px'>");
-         $('#cd12-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/technology-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd12-13').remove();
+  $('#cd11-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/business-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd13-13').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/culture-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd11-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/science-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd12-12').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/sports-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd11-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/cuisine-icon.png' style='width:90px;height:70px;margin-left:66px'>");
+  $('#cd12-14').css({'top': '-55px', height: '120px'}).prepend("<img src='static/icons/technology-icon.png' style='width:90px;height:70px;margin-left:66px'>");
 
-         $('#ef11-13').addClass('mains').text('business');
-         $('#ef13-13').addClass('mains').text('culture');
-         $('#ef11-12').addClass('mains').text('science');
-         $('#ef12-12').addClass('mains').text('sports');
-         $('#ef11-14').addClass('mains').text('cuisine');
-         $('#ef12-14').addClass('mains').text('technology');
-
-
-       },
-       'error' : function(request,error)
-       {
-           alert("Request: "+JSON.stringify(request));
-       }
-   });
+  $('#ef11-13').addClass('mains').text('business');
+  $('#ef13-13').addClass('mains').text('culture');
+  $('#ef11-12').addClass('mains').text('science');
+  $('#ef12-12').addClass('mains').text('sports');
+  $('#ef11-14').addClass('mains').text('cuisine');
+  $('#ef12-14').addClass('mains').text('technology');
 
 
 

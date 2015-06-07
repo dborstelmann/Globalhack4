@@ -9,12 +9,17 @@ def top_stories():
     response = requests.get("http://api.nytimes.com/svc/topstories/v1/home.json?api-key=ba5407bdbf571895b000d0faa7948cbe:2:72232947")
     return jsonify(response.json(), status=200)
 
+@app.route("/article_search/<keyword>/")
+def article_search(keyword):
+    response = requests.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+keyword+"term&sort=newest&api-key9d60ae08b50ca80bbd851d6bb2800f35:12:72232947")
+    return jsonify(response.json(), status=200)
+
 
 @app.route("/search/")
 def search():
     results = requests.get("http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/7/json?api-key=5833081c31fb947072ec5e9820a498fa:18:72232947").json()['results']
-    for result in (requests.get("http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/7/20/json?api-key=5833081c31fb947072ec5e9820a498fa:18:72232947").json()['results']):
-        results.append(result)
+    # for result in (requests.get("http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/7/20/json?api-key=5833081c31fb947072ec5e9820a498fa:18:72232947").json()['results']):
+    #     results.append(result)
     # for result in (requests.get("http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/7/40/json?api-key=5833081c31fb947072ec5e9820a498fa:18:72232947").json()['results']):
     #     results.append(result)
     # for result in (requests.get("http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/7/60/json?api-key=5833081c31fb947072ec5e9820a498fa:18:72232947").json()['results']):
