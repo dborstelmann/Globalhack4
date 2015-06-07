@@ -578,62 +578,6 @@ _.each(hexValObjs, function (hexObj, index) {
 
 });
 
-// $.ajax({
-//
-//        'url' : 'http://localhost:5000/search/',
-//        'type' : 'GET',
-//        'success' : function(data) {
-//         _.each($('.headline'), function (value, index) {
-//             $(value).text(data.results[index].title);
-//          });
-//          _.each($('.hex-specific'), function (value, index) {
-//              var article = data.results[index];
-//              var img = ''
-//              if (article.media) {
-//                img = article.media[0]['media-metadata'][0].url;
-//              }
-//              var datas = hexValObjs[index];
-//              if (datas.yArrayPos % 2 == 0) {
-//                defs
-//                   .append("pattern")
-//                   .attr("id", index)
-//                   .attr('width', 259.808)
-//                   .attr('height', 300)
-//                   .attr('x', 0)
-//                   .attr('y', 40.192)
-//                   .attr("patternUnits","userSpaceOnUse")
-//                   .append("image")
-//                   .attr('width', 300)
-//                   .attr('height', 300)
-//                   .attr('x', 0)
-//                   .attr("xlink:href", img);
-//              } else {
-//                defs
-//                   .append("pattern")
-//                   .attr("id", index)
-//                   .attr('width', 259.808)
-//                   .attr('height', 300)
-//                   .attr('x', 259.808/2)
-//                   .attr('y', 40.192)
-//                   .attr("patternUnits","userSpaceOnUse")
-//                   .append("image")
-//                   .attr('width', 300)
-//                   .attr('height', 300)
-//                   .attr('x', 0)
-//                   .attr("xlink:href", img);
-//              }
-//
-//                 d3.select('path[data-array-loc=z'+datas.xArrayPos+'-'+datas.yArrayPos+']').style('fill', "url(#"+index+")");
-//          });
-//
-//
-//        },
-//        'error' : function(request,error)
-//        {
-//            alert("Request: "+JSON.stringify(request));
-//        }
-//    });
-
    defs
       .append("pattern")
       .attr("id", 'business')
@@ -774,7 +718,6 @@ window.scrollTo(2406, 2306);
 </script>
 
 <script type="text/javascript" charset="utf-8">
-  LD.request_height('700px');
-  LD.request_width('1500px');
+  LD.request_height('800px');
 </script>
 </html>
